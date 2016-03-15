@@ -13,7 +13,7 @@ setup(
  
     classifiers=[
         "Programming Language :: Python",
-        "Development Status :: 1 - Planning",
+        "Development Status :: 4 - Beta",
         "Natural Language :: French",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.4",
