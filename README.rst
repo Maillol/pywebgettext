@@ -9,26 +9,40 @@ pywebgettext can extract the gettext message inside HTML tag attributes or scrip
 Installation
 ============
 
+.. code-block:: bash
+
     pip install pywebgettext
 
 
 Documentation
 =============
 
-    1. Generate POT translation file:
+1. Generate POT translation file:
 
-        pywebgettext --output=locale/messages.pot --sort-by-file template1.html file2.py 
- 
-    2. Merge against existing PO file or initialize a PO file:
+.. code-block:: bash
 
-        msgmerge --sort-by-file --output-file=locale/fr_FR/LC_MESSAGES/messages.po locale/fr_FR/LC_MESSAGES/messages.po locale/messages.pot
-            
-        Initialize PO file, if it doesn't exist yet:
-        msginit --input=messages --output-file=locale/fr_FR/LC_MESSAGES/messages.po --no-wrap --locale=fr_FR
+    $ pywebgettext --output=locale/messages.pot --sort-by-file template1.html file2.py 
 
-    3. Fill empty strings like msgstr "" in messages.po.
 
-    4. Compile:
+2. Merge against existing PO file or initialize a PO file:
 
-        msgfmt locale/fr_FR/LC_MESSAGES/messages.po -o locale/fr_FR/LC_MESSAGES/messages.mo
+.. code-block:: bash
+
+    $ msgmerge --sort-by-file --output-file=locale/fr_FR/LC_MESSAGES/messages.po locale/fr_FR/LC_MESSAGES/messages.po locale/messages.pot
+
+
+Initialize PO file, if it doesn't exist yet:
+
+.. code-block:: bash
+
+    $ msginit --input=messages --output-file=locale/fr_FR/LC_MESSAGES/messages.po --no-wrap --locale=fr_FR
+
+
+3. Fill empty strings like msgstr "" in messages.po.
+
+4. Compile:
+    
+.. code-block:: bash
+
+    $ msgfmt locale/fr_FR/LC_MESSAGES/messages.po -o locale/fr_FR/LC_MESSAGES/messages.mo
 
