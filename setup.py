@@ -4,7 +4,7 @@ import pywebgettext
 setup(
     name='pywebgettext',
     version=pywebgettext.__version__,
-    py_modules = ['pywebgettext'],
+    packages = ['pywebgettext'],
     author="Vincent MAILLOL",
     author_email="pywebgettext@gmail.com",
     description="Extract gettext strings from python template",
@@ -22,7 +22,7 @@ setup(
  
     entry_points = {
         'console_scripts': [
-            'pywebgettext = pywebgettext',
+            'pywebgettext = pywebgettext.__main__:main',
         ],
     },
     license="WTFPL"

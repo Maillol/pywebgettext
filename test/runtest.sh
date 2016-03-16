@@ -1,15 +1,24 @@
 #!/bin/bash
 
+if [[ ${0:0:1} == "/" ]]; then
+    pypath=${0%/*}
+else
+    pypath=${PWD}/${0}
+    pypath=${pypath%/*}
+fi
+export PYTHONPATH="${pypath}/.."
+
+
 tmpdir=$(mktemp -d)
 
 startDatetime=$(date -Iminutes)
-python3 ../pywebgettext.py --from-code utf-8 \
-                           --copyright-holder maillol \
-                           --package-name xpyweb \
-                           --package-version 1 \
-                           --msgid-bugs-address maillol@xpyweb \
-                           --sort-by-file \
-                           sample/*
+python3 -m pywebgettext --from-code utf-8 \
+                        --copyright-holder maillol \
+                        --package-name xpyweb \
+                        --package-version 1 \
+                        --msgid-bugs-address maillol@xpyweb \
+                        --sort-by-file \
+                        sample/*
 endDatetime=$(date -Iminutes)
 
 grep -v 'POT-Creation-Date:' expected.po > $tmpdir/expected.po

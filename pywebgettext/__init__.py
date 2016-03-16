@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                    Version 2, December 2004
@@ -18,10 +17,10 @@ as the name is changed.
 
 __version__ = "0.0.1"
 
-import argparse
 import ast
 import re
-import time
+
+
 
 
 HEADER_TEMPLATE = """
@@ -122,8 +121,16 @@ class Message:
                 'msgstr[0] ""',
                 'msgstr[1] ""\n'))
 
+class MetaExtractor(type):
+    
+    extractors = {}
 
-class Extractor:
+    def __init__(cls, name, parent, kwargs):
+        if parent:
+            type(cls).extractors[cls.extension] = cls
+                
+
+class Extractor(metaclass=MetaExtractor):
     """
     Abstract class to extract gettext strings from file.
     """
@@ -217,87 +224,4 @@ class TemplateExtractor(Extractor):
                     message.msgid_plural = match.group(2)[1:-1]
                 match = self.regex.search(line, match.end())
 
-
-
-def main(extractors):
-    """
-    Extract translatable strings from given input files.
-    """
-    parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument('input_files', metavar='INPUTFILE', nargs='+',
-                        help='input templates or python files')
-
-    parser.add_argument('-f', '--files-from', dest='input_files', metavar='FILE',
-                        action='append',
-                        help='get list of input files from FILE')
-
-    parser.add_argument('-d', '--default-domain', dest='domain', metavar='NAME',
-                        action='store', default='messages',
-                        help='use NAME.po for output instead of messages')
-
-    parser.add_argument('-o', '--output', dest='output_file', metavar='FILE',
-                        action='store',
-                        help='write output to specified file')
-
-    parser.add_argument('--from-code', dest='charset', metavar='NAME',
-                        action='store', default="ASCII",
-                        help='encoding of input files '
-                             'By default the input files are '
-                             'assumed to be in {default}.')
-
-    parser.add_argument('-F', '--sort-by-file', dest='sort_output',
-                        action='store_true',
-                        help='sort output by file location')
-
-    parser.add_argument('--copyright-holder', dest='copyright_holder',
-                        action='store', default="THE PACKAGE'S COPYRIGHT HOLDER",
-                        help='set copyright holder in output')
-
-    parser.add_argument('--package-name', dest='package_name', metavar="PACKAGE",
-                        action='store',
-                        help='set package name in output')
-
-    parser.add_argument('--package-version', dest='package_version', metavar="VERSION",
-                        action='store',
-                        help='set package name in output')
-
-    parser.add_argument('--msgid-bugs-address', dest='bugs_address', metavar="EMAIL@ADDRESS",
-                        action='store', default='',
-                        help='set report address for msgid bugs')
-
-    args = parser.parse_args()
-    if args.output_file is None:
-        args.output_file = '{}.po'.format(args.domain)
-
-    if args.package_name is not None:
-        args.package = args.package_name
-        if args.package_version is not None:
-            args.package = " " + args.package_version
-    else:
-        args.package = 'PACKAGE VERSION'
-
-    messages_by_msgid = dict()
-    for file_name in args.input_files:
-        for extractor in extractors:
-            if extractor().extract(messages_by_msgid, file_name):
-                break
-
-    messages = list(messages_by_msgid.values())
-    if args.sort_output:
-        for message in messages:
-            message.references.sort()
-        messages.sort(key=lambda msg: msg.references)
-
-    with open(args.output_file, 'w') as output_file:
-        headers = HEADER_TEMPLATE.format(
-            time=time.strftime('%Y-%m-%d %H:%M%z'),
-            args=args
-        )
-        output_file.write(headers)
-        for message in messages:
-            output_file.write('{}\n'.format(message))
-
-
-if __name__ == '__main__':
-    main([PyExtractor, TemplateExtractor])
 
