@@ -15,3 +15,6 @@ class MainHandler(tornado.web.RequestHandler):
     def post(self, name):
         msg = self.locale.translate("{list} is\nonline")
         self.write(msg.format("name"))
+
+    def put(self, name):
+        self.locale.translate(name)

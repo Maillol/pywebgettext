@@ -15,11 +15,11 @@ as the name is changed.
  0. You just DO WHAT THE FUCK YOU WANT TO.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 import ast
 import re
-
+import sys
 
 
 
@@ -186,7 +186,15 @@ class PyExtractor(Extractor):
                 if ((hasattr(func, 'id') and func.id in gettext_name)
                         or (hasattr(func, 'attr') and func.attr == 'translate')):
                     reference = "{}:{}".format(input_file.name, node.args[0].lineno)
-                    msgid = node.args[0].s
+                    try:
+                        msgid = node.args[0].s
+                    except AttributeError:
+                        warning_msg = 'Warning: File "{}", line {}'.format(
+                            input_file.name, node.args[0].lineno)
+                        print(warning_msg, file=sys.stderr)
+                        self.generic_visit(node)
+                        return
+
                     message = messages_by_msgid.setdefault(msgid, Message(msgid))
                     message.references.append(reference)
                     if len(node.args) > 1:
